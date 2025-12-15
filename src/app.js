@@ -14,7 +14,6 @@ import salesRouter from "./routes/sales.js";
 import perfilRouter from "./routes/perfil.routes.js"; 
 import reporteventasRoutes from "./routes/reporteventas.routes.js";
 
-
 // Configuración de entorno
 dotenv.config();
 
@@ -34,8 +33,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productsRouter);
 app.use("/api/sales", salesRouter);
 app.use("/api/perfi", perfilRouter);
-app.use("/reporteventas", reporteventasRoutes);
-
+app.use("/api/reporteventas", reporteventasRoutes);
 
 // Archivos estáticos
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads"))); // mejor usar process.cwd() en ESM
