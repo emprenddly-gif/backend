@@ -1,63 +1,67 @@
 import db from "../config/db.js";  
-
 // =======================
-// 📊 VENTAS MENSUALES
+// 📊 VENTAS MENSUALES (Calcula el Monto Total, no solo la Cantidad)
 // =======================
 export const getVentasMensuales = async (req, res) => {
-  try {
-    let { year, month } = req.query;
-    const ahora = new Date();
+    try {
+        let { year, month } = req.query;
+        const ahora = new Date();
 
-    if (!year) year = ahora.getFullYear();
-    if (!month) month = ahora.getMonth() + 1; // 0-11
+        if (!year) year = ahora.getFullYear();
+        if (!month) month = ahora.getMonth() + 1; // Corregido: 0-11
 
-    const [rows] = await db.query(
-      `SELECT 
-        WEEK(rv.Fecha, 1) - WEEK(DATE_SUB(rv.Fecha, INTERVAL DAYOFMONTH(rv.Fecha)-1 DAY), 1) + 1 AS semana,
-        mp.Nombre AS metodo_pago,
-        SUM(rv.Cantidad) AS total
-      FROM  Registro_Ventas rv
-      INNER JOIN Metodo_Pago mp ON rv.Id_Metodo = mp.Id_Metodo
-      WHERE YEAR(rv.Fecha) = ? AND MONTH(rv.Fecha) = ?
-      GROUP BY semana, metodo_pago
-      ORDER BY semana, metodo_pago;`,
-      [year, month]
-    );
+        const [rows] = await db.query(
+            `SELECT 
+                -- Fórmula para calcular la semana del mes
+                WEEK(rv.Fecha, 1) - WEEK(DATE_SUB(rv.Fecha, INTERVAL DAYOFMONTH(rv.Fecha)-1 DAY), 1) + 1 AS semana,
+                mp.Nombre AS metodo_pago,
+                -- CÁLCULO DE MONTO TOTAL: Cantidad * Precio del Producto
+                SUM(rv.Cantidad * p.Precio) AS monto_total 
+            FROM Registro_Ventas rv
+            INNER JOIN Metodo_Pago mp ON rv.Id_Metodo = mp.Id_Metodo
+            INNER JOIN Productos p ON rv.Id_Productos = p.Id_Productos -- Nuevo JOIN para obtener el precio
+            WHERE YEAR(rv.Fecha) = ? AND MONTH(rv.Fecha) = ?
+            GROUP BY semana, metodo_pago
+            ORDER BY semana, metodo_pago;`,
+            [year, month]
+        );
 
-    res.json({ year, month, ventas: rows });
-  } catch (error) {
-    console.error("Error en getVentasMensuales:", error);
-    res.status(500).json({ message: "Error al obtener reporte mensual" });
-  }
+        res.json({ year, month, ventas: rows });
+    } catch (error) {
+        console.error("Error en getVentasMensuales:", error);
+        res.status(500).json({ message: "Error al obtener reporte mensual" });
+    }
 };
 
-
 // =======================
-// 📊 SEMANA ESPECÍFICA
+// 📊 SEMANA ESPECÍFICA (Calcula el Monto Total, no solo la Cantidad)
 // =======================
 export const getSemanaEspecifica = async (req, res) => {
-  try {
-    const { year, week } = req.query;
-    if (!year || !week) return res.status(400).json({ message: "Falta year o week" });
+    try {
+        const { year, week } = req.query;
+        if (!year || !week) return res.status(400).json({ message: "Falta year o week" });
 
-    const [rows] = await db.query(
-      `SELECT 
-        WEEK(rv.Fecha, 1) AS semana,
-        mp.Nombre AS metodo_pago,
-        SUM(rv.Cantidad) AS total
-       FROM Registro_Ventas rv
-       INNER JOIN Metodo_Pago mp ON rv.Id_Metodo = mp.Id_Metodo
-       WHERE YEAR(rv.Fecha) = ? AND WEEK(rv.Fecha, 1) = ?
-       GROUP BY semana, metodo_pago`,
-      [year, week]
-    );
+        const [rows] = await db.query(
+            `SELECT 
+                WEEK(rv.Fecha, 1) AS semana,
+                mp.Nombre AS metodo_pago,
+                -- CÁLCULO DE MONTO TOTAL
+                SUM(rv.Cantidad * p.Precio) AS monto_total
+            FROM Registro_Ventas rv
+            INNER JOIN Metodo_Pago mp ON rv.Id_Metodo = mp.Id_Metodo
+            INNER JOIN Productos p ON rv.Id_Productos = p.Id_Productos
+            WHERE YEAR(rv.Fecha) = ? AND WEEK(rv.Fecha, 1) = ?
+            GROUP BY semana, metodo_pago`,
+            [year, week]
+        );
 
-    res.json(rows);
-  } catch (error) {
-    console.error("Error en getSemanaEspecifica:", error);
-    res.status(500).json({ message: "Error al obtener datos" });
-  }
+        res.json(rows);
+    } catch (error) {
+        console.error("Error en getSemanaEspecifica:", error);
+        res.status(500).json({ message: "Error al obtener datos" });
+    }
 };
+
 
 export const getVentasAnuales = async (req, res) => {
   try {
