@@ -4,11 +4,16 @@ import upload from "../middlewares/upload.js";
 
 const router = express.Router();
 
-// Rutas
+// 🔹 Obtener productos
 router.get("/productos", getProductos);
+
+// 🔹 Crear nueva venta
 router.post("/", upload.single("imagen"), createSale);
+
+// 🔹 Obtener todas las ventas
 router.get("/", getVentas);
+
+// 🔹 Actualizar venta por ID
 router.put("/sales/:id", updateVenta);
 
-// Exportar router como default
 export default router;

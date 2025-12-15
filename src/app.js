@@ -11,7 +11,6 @@ import registrogastosRoutes from "./routes/registrogastos.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import productsRouter from "./routes/products.js";
 import salesRouter from "./routes/sales.js"; 
-import productsRouter from "./routes/products.js";
 
 
 // Configuración de entorno

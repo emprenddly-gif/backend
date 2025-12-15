@@ -1,6 +1,8 @@
-const db = require("../config/db");
+// Importar conexión a la base de datos
+import db from "../config/db.js";
 
-exports.getProductos = async (req, res) => {
+// 🔹 Obtener productos
+export const getProductos = async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM Productos");
     res.json(rows);
@@ -10,8 +12,8 @@ exports.getProductos = async (req, res) => {
   }
 };
 
-
-exports.createSale = async (req, res) => {
+// 🔹 Registrar venta
+export const createSale = async (req, res) => {
   try {
     const {
       nombreProducto,
@@ -77,7 +79,7 @@ exports.createSale = async (req, res) => {
 };
 
 // 🔹 Obtener ventas registradas
-exports.getVentas = async (req, res) => {
+export const getVentas = async (req, res) => {
   try {
     const [results] = await db.query(`
       SELECT 
@@ -97,8 +99,8 @@ exports.getVentas = async (req, res) => {
   }
 };
 
-
-exports.updateVenta = async (req, res) => {
+// 🔹 Actualizar venta
+export const updateVenta = async (req, res) => {
   try {
     const { id } = req.params;
     const { nombreProducto, cantidad, precio } = req.body;
