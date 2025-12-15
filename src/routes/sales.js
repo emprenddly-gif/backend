@@ -1,17 +1,14 @@
-const express = require("express");
+import express from "express";
+import { getProductos, createSale, getVentas, updateVenta } from "../controllers/sale.controller.js";
+import upload from "../middlewares/upload.js";
+
 const router = express.Router();
 
-const {
-  getProductos,
-  createSale,
-  getVentas, 
-  updateVenta
-} = require("../controllers/sale.controller");
-
-const upload = require("../middlewares/upload");
+// Rutas
 router.get("/productos", getProductos);
 router.post("/", upload.single("imagen"), createSale);
-router.get("/", getVentas); 
+router.get("/", getVentas);
 router.put("/sales/:id", updateVenta);
 
-module.exports = router;
+// Exportar router como default
+export default router;

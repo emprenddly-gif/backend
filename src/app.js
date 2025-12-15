@@ -1,19 +1,23 @@
+// Importaciones ESM
 import express from "express";
 import cors from "cors";
+import path from "path";
+import dotenv from "dotenv";
+
 import inventarioRoutes from "./routes/inventario.routes.js";
 import reportesRoutes from "./routes/reportes.routes.js";
 import reportegastosRoutes from "./routes/reportegastos.routes.js";
 import registrogastosRoutes from "./routes/registrogastos.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import productsRouter from "./routes/products.js";
+import salesRouter from "./routes/sales.js"; 
+import productsRouter from "./routes/products.js";
 
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-require("dotenv").config();
 
-const productsRouter = require("./routes/products");
-const salesRouter = require("./scr/routes/sales");
+// Configuración de entorno
+dotenv.config();
 
+// Crear la app de Express
 const app = express();
 
 // Middlewares
@@ -28,10 +32,14 @@ app.use("/registrogastos", registrogastosRoutes);
 app.use("/api/users", userRoutes); 
 app.use("/api/products", productsRouter);
 app.use("/api/sales", salesRouter);
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// Archivos estáticos
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads"))); // mejor usar process.cwd() en ESM
+
 // Ruta básica
 app.get("/", (req, res) => {
   res.send("✅ Bienvenido a la API de Emprendly");
 });
 
+// Exportar la app
 export default app;
