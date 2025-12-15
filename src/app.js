@@ -6,6 +6,13 @@ import reportegastosRoutes from "./routes/reportegastos.routes.js";
 import registrogastosRoutes from "./routes/registrogastos.routes.js";
 import userRoutes from "./routes/user.routes.js";
 
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+require("dotenv").config();
+
+const productsRouter = require("./routes/products");
+const salesRouter = require("./scr/routes/sales");
 
 const app = express();
 
@@ -19,7 +26,9 @@ app.use("/api", reportesRoutes);
 app.use("/reportegastos", reportegastosRoutes);
 app.use("/registrogastos", registrogastosRoutes);
 app.use("/api/users", userRoutes); 
-
+app.use("/api/products", productsRouter);
+app.use("/api/sales", salesRouter);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Ruta básica
 app.get("/", (req, res) => {
   res.send("✅ Bienvenido a la API de Emprendly");
