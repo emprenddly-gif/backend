@@ -11,6 +11,8 @@ import registrogastosRoutes from "./routes/registrogastos.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import productsRouter from "./routes/products.js";
 import salesRouter from "./routes/sales.js"; 
+import perfilRouter from "./routes/perfil.routes.js"; 
+import reporteventasRoutes from "./routes/reporteventas.routes.js";
 
 
 // Configuración de entorno
@@ -31,6 +33,9 @@ app.use("/registrogastos", registrogastosRoutes);
 app.use("/api/users", userRoutes); 
 app.use("/api/products", productsRouter);
 app.use("/api/sales", salesRouter);
+app.use("/api/perfi", perfilRouter);
+app.use("/reporteventas", reporteventasRoutes);
+
 
 // Archivos estáticos
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads"))); // mejor usar process.cwd() en ESM
